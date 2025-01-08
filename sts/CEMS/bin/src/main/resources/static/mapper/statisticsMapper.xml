@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+       
+<mapper namespace="com.cems.application.mybatis.StatisticsRepository">	
+	
+	<select id="correctRatio" parameterType="String" resultType="com.cems.application.vo.StatisticsDto">
+		SELECT  b.TOPIK1_question_subtype , ROUND(100 * (SUM(a.correct_results='1') / COUNT(a.correct_results))) as correctRatio
+		  FROM TOPIK1_user_type a, TOPIK1_question_subtype b ,user_info ui
+		 WHERE  ui.user_id = a.user_id
+		   AND a.user_id = #{user_id}
+		   AND a.TOPIK1_subtype_id  = b.TOPIK1_subtype_id
+		   AND user_delete_check = '0'
+		 GROUP BY a.TOPIK1_subtype_id
+		 ;
+	</select>
+	
+	<select id="totalQuetion" parameterType="Map" resultType="com.cems.application.vo.StatisticsDto">
+		<![CDATA[
+		SELECT ROUND(count(*) / 2) as total_cnt, count(CASE WHEN ut.user_id = #{user_id} THEN '1' END) as user_cnt
+		  FROM TOPIK1_user_type ut, user_info ui
+		 WHERE ut.user_id = ui.user_id
+		   AND DATE_FORMAT(TOPIK1_results_date, '%y%m%d')  <=  DATE_FORMAT(now(), '%y%m%d') - #{cnt}
+		   AND ut.user_id <> 'admin@cems.com' 
+		   AND ui.user_delete_check = '0'
+		 ORDER BY ut.TOPIK1_results_date DESC;
+	 	 ]]>
+	</select>
+</mapper>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        
+
+<mapper namespace="com.cems.application.mybatis.UserRepository">
+	<select id="getAllMember" resultType="com.cems.application.vo.UserDto">
+		SELECT * FROM user_info
+		 WHERE user_delete_check = '0';
+	</select>
+	
+	<select id="login" parameterType="com.cems.application.vo.UserDto" resultType="com.cems.application.vo.UserDto">
+		SELECT user_id, user_password, user_name, user_country, user_nickname, user_type, admin FROM user_info 
+		 WHERE user_id = #{user_id} 
+		   AND user_password = #{user_password}
+		   AND user_delete_check = '0';
+	</select>
+	
+	<select id="idCheck" resultType="int" parameterType="String">
+		SELECT COUNT(user_id) FROM user_info 
+		 WHERE user_id = #{user_id};
+	</select>	
+	
+	
+	<insert id="userInsert" parameterType="com.cems.application.vo.UserDto">
+		INSERT INTO user_info(user_name, user_nickname, user_id, user_password, user_country, user_type)
+ 		VALUES (#{user_name},#{user_nickname},#{user_id},#{user_password},#{user_country},#{user_type});
+	</insert>
+	
+	<update id="userDelete" parameterType="String">
+		UPDATE user_info SET user_delete_check = '1'
+		 WHERE user_id = #{user_id};
+	</update>
+	
+	<update id="updatepw" parameterType="com.cems.application.vo.UserDto">
+		UPDATE user_info SET user_password = #{newpw} 
+		 WHERE user_id = #{user_id};
+	</update>
+	
+	<select id="pwCheck" resultType="int" parameterType="String">
+		SELECT COUNT(user_id) 
+		  FROM user_info 
+		 WHERE user_password = #{userpw};
+	</select>
+</mapper>

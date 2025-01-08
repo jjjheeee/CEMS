@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        
+<!-- =========== 공지사항 매핑 ==================== -->
+
+<mapper namespace="com.cems.application.mybatis.BoardRepository">
+
+	<select id='getAdminBoard' resultType="com.cems.application.vo.BoardDto">
+		SELECT * 
+		FROM board 
+		WHERE admin = '1'
+		ORDER BY write_date DESC;
+	</select>
+	
+	<select id='getUserBoard' resultType="com.cems.application.vo.BoardDto">
+		SELECT b.*, u.user_ban 	
+  		  FROM board b, user_info u
+		 WHERE b.user_id = u.user_id
+		   AND b.admin = '0'
+		   AND user_delete_check = '0'
+		   AND board_delete_check = '0'
+		 ORDER BY b.write_date DESC; 
+	</select>
+	
+	<select id='getMarkBoard' resultType="com.cems.application.vo.BoardDto">
+		SELECT * 
+		FROM board 
+		WHERE bookmark = '-fill' 
+		ORDER BY write_date DESC;
+	</select>
+	
+	<select id='getBoard' resultType="com.cems.application.vo.BoardDto" parameterType="com.cems.application.vo.BoardDto">
+		SELECT b.*, u.user_ban 	
+  		  FROM board b, user_info u
+		 WHERE b.user_id = u.user_id
+		   AND user_delete_check = '0'
+		   AND b.board_id = #{board_id}
+	</select>
+	
+	<insert id="insertBoard" parameterType="com.cems.application.vo.BoardDto">
+		INSERT INTO board(writer, title, content, admin, user_id)
+		VALUES (#{writer}, #{title}, #{content}, #{admin}, #{user_id});
+	</insert>
+	
+	<update id="deleteBoard" parameterType="com.cems.application.vo.BoardDto">
+		UPDATE board SET board_delete_check = '1'
+		 WHERE board_id = #{board_id}
+	</update>
+	
+	<update id="updateBoard" parameterType="com.cems.application.vo.BoardDto">
+		UPDATE board 
+		SET title = #{title}, 
+			content = #{content} 
+		WHERE board_id = #{board_id};
+	</update>
+	
+	<update id="updateView" parameterType="com.cems.application.vo.BoardDto">
+		UPDATE board 
+		SET viewcnt = viewcnt + 1 
+		WHERE board_id = #{board_id};
+	</update>
+	
+	<update id="updateMark" parameterType="com.cems.application.vo.BoardDto">
+		UPDATE board 
+		SET bookmark = CASE WHEN bookmark = '' THEN '-fill' WHEN bookmark ='-fill' THEN '' ELSE bookmark END WHERE board_id = #{board_id};
+	</update>
+	
+	<!-- ============== Mock Board 관련 =============== -->
+	
+	<select id='getAllMockboard' resultType="com.cems.application.vo.MockboardDto">
+		SELECT m.*, c.coursenm 
+		FROM mockboard m , course c 
+		WHERE m.course = c.course 
+		ORDER BY write_date DESC;
+	</select>
+	
+	<select id='getMockboard' resultType="com.cems.application.vo.MockboardDto" parameterType="int">
+		SELECT m.*, c.coursenm 
+		FROM mockboard m , course c 
+		WHERE m.course = c.course 
+		AND mockboard_id = #{mockboard_id};
+	</select>
+	
+	<!-- ============== Mock Board 관련 =============== -->
+	
+	<!-- ============== LeaderBoard 관련 =============== -->
+	
+	<select id='getleaderBoard' resultType="com.cems.application.vo.LeaderDto" parameterType="String">
+		SELECT  r.*
+		  FROM ranking r
+		 WHERE r.user_id = #{user_id}
+		 UNION ALL
+		SELECT  R.* FROM (SELECT * FROM ranking ORDER BY ranking) as R;
+		
+		<!-- SELECT  r.user_name, r.user_nickname, r.user_country, r.user_id, r.question_cnt, r.ranking
+		  FROM ranking r
+		 WHERE r.user_id = 'test@test.com'
+		UNION ALL
+		SELECT  R.* FROM (SELECT b.user_name, b.user_nickname, b.user_country , b.user_id, question_cnt, RANK() OVER(ORDER BY question_cnt DESC) as ranking
+		  FROM (SELECT bc.user_name, bc.user_nickname, bc.user_country , bc.user_id, count(CASE WHEN ab.correct_results = '1' THEN '1' END) as question_cnt
+				  FROM TOPIK1_user_type ab RIGHT JOIN user_info bc
+		    		ON ab.user_id = bc.user_id
+				 WHERE bc.admin = '0'
+		 		 GROUP BY user_id
+		 		 ORDER BY question_cnt DESC) as a RIGHT JOIN user_info b
+		    ON a.user_id = b.user_id
+		 WHERE b.admin = '0'
+		 GROUP BY a.user_id
+		 ORDER BY ranking) as R; -->
+		 
+		 <!-- CREATE VIEW ranking -->
+		 
+		 <!-- 
+		CREATE VIEW ranking as SELECT b.user_name, b.user_nickname, b.user_country , b.user_id, question_cnt, RANK() OVER(ORDER BY question_cnt DESC) as ranking
+		  FROM (SELECT bc.user_name, bc.user_nickname, bc.user_country , bc.user_id, count(CASE WHEN ab.correct_results = '1' THEN '1' END) as question_cnt
+				  FROM TOPIK1_user_type ab RIGHT JOIN user_info bc
+		    		ON ab.user_id = bc.user_id
+				 WHERE bc.admin = '0'
+		 		 GROUP BY user_id
+		 		 ORDER BY question_cnt DESC) as a RIGHT JOIN user_info b 
+		    ON a.user_id = b.user_id
+		 WHERE b.admin = '0'
+		   AND b.user_delete_check = '0'
+		 GROUP BY a.user_id
+		 ORDER BY question_cnt DESC;
+		  -->
+	</select>
+	
+	
+	
+	<!-- ============== LeaderBoard 관련 =============== -->
+	
+	
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+

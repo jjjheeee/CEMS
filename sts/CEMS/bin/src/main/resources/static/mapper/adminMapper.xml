@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        
+
+<mapper namespace="com.cems.application.mybatis.AdminRepository">
+	<select id="adminUserpage" resultType="com.cems.application.vo.UserDto">
+		 SELECT uf.*
+		 	  , DATE_FORMAT(now(), '%y%m%d') - DATE_FORMAT(user_in_date , '%y%m%d') as `day`
+		 	  , COUNT(CASE WHEN uf.user_id = ut.user_id THEN '1' END) as user_cnt
+		   FROM user_info uf LEFT JOIN TOPIK1_user_type ut
+		  	 ON uf.user_id = ut.user_id
+		  GROUP BY uf.user_id
+		  ORDER BY user_in_date DESC
+		;
+	</select>
+	
+	<select id="adminUserboard" resultType="com.cems.application.vo.BoardDto" parameterType="String">
+		SELECT b.*
+		  FROM board b, user_info ui
+		 WHERE b.user_id = ui.user_id 
+		 ORDER BY ui.user_in_date; 
+	</select>
+	
+	<select id="adminDash" resultType="map">	
+		SELECT (SELECT count(*) from create_TOPIK1_question ctq) AS total_question_cnt , 
+		       (SELECT  count(CASE WHEN question_counts != 0 THEN '1' END)  FROM create_TOPIK1_question ctq2) AS used_question_cnt , 
+		       COUNT(*) as user_cnt , 
+		       (SELECT sum(tut.user_question_time) from TOPIK1_user_type tut) as total_time
+		  FROM user_info 
+		 WHERE admin ='0';
+	</select>
+	
+	<update id="updateBan" parameterType="com.cems.application.vo.UserDto">
+		UPDATE user_info
+		SET user_ban = #{user_ban}
+		WHERE user_id = #{user_id};
+	</update>
+	
+	<select id="deleteUsercnt" resultType="int">
+		SELECT count(*) 
+		  FROM user_info
+		 WHERE user_delete_check = '1'
+		   AND admin = '0';
+	</select>
+	
+	
+	
+</mapper>

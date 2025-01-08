@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+       
+<mapper namespace="com.cems.application.mybatis.QuestionRepository">	
+
+	<select id="list"  resultType="com.cems.application.vo.QuestionDto" parameterType="String">
+		SELECT *
+		  FROM (
+			SELECT *
+			  FROM create_TOPIK1_question c
+			 where c.paragraph_id not in (SELECT c.paragraph_id
+		  FROM create_TOPIK1_question c, TOPIK1_user_type tut
+		 where c.paragraph_id = tut.paragraph_id
+		   AND tut.user_id = #{user_id}
+		   )
+			 ORDER BY RAND()
+		 ) AS q
+		 WHERE question_used = '0'
+		   AND listening_check = '0'
+		 GROUP BY q.sentence_id;
+	</select>
+	
+	<update id="questionUsedUpdate" statementType="CALLABLE" >
+		 CALL question_used_update()
+	</update>
+	
+	<!-- result -->
+	<insert id="insertResult" parameterType="com.cems.application.vo.ResultDto">
+		INSERT INTO TOPIK1_user_type(user_id, paragraph_id, TOPIK1_type_id, TOPIK1_subtype_id, user_question_time, TOPIK1_results_date, division_exercise_mock, correct_results) 
+		VALUES (#{user_id}, #{paragraph_id}, #{TOPIK1_type_id}, #{TOPIK1_subtype_id}, #{user_question_time}, now(), #{division_exercise_mock}, #{correct_results});
+	</insert>
+	
+	<select id="showResult" resultType="com.cems.application.vo.ResultDto" parameterType="Map">
+	SELECT * 
+  	  FROM TOPIK1_user_type
+ 	 WHERE user_id = #{user_id}
+ 	 ORDER BY TOPIK1_results_date DESC
+ 	 LIMIT #{insertcnt}
+ 	 ;
+	</select>
+	
+	<select id="correctRatio" parameterType="String" resultType="com.cems.application.vo.StatisticsDto">
+		SELECT TOPIK1_type_id , TOPIK1_subtype_id, ROUND(100 * (SUM(correct_results='1') / COUNT(correct_results))) as correctRatio
+		  FROM TOPIK1_user_type
+		 WHERE user_id = #{user_id}
+		   AND user_delete_check = '0'
+		 GROUP BY TOPIK1_subtype_id
+		 ;
+	</select>
+	
+	<select id="listenQuestion" resultType="com.cems.application.vo.QuestionDto" parameterType="String">
+		SELECT *
+		  FROM (
+			SELECT *
+			  FROM create_TOPIK1_question c
+			 where c.paragraph_id not in (SELECT c.paragraph_id
+		  FROM create_TOPIK1_question c, TOPIK1_user_type tut
+		 where c.paragraph_id = tut.paragraph_id
+		   AND tut.user_id = #{user_id}
+		   )
+			 ORDER BY RAND()
+		 ) AS q
+		 WHERE question_used = '0'
+		   AND listening_check = '1'
+		 LIMIT 7;	
+   	</select>
+	
+</mapper>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        
+<mapper namespace="com.cems.application.mybatis.CommentRepository">	
+	<select id="comment_list" resultType="com.cems.application.vo.CommentDto" parameterType="int">
+		SELECT c.comment_id, c.content, c.writer, c.write_date, c.heart, c.user_id, u.user_ban
+		FROM comment c, user_info u
+		WHERE board_id = #{board_id} 
+		  AND c.user_id = u.user_id
+		  AND user_delete_check = '0'
+		  AND comment_delete_check = '0'
+		ORDER BY write_date DESC
+	</select>
+
+	<select id="recomment_list" resultType="com.cems.application.vo.RecommentDto" parameterType="int">
+		select r.content, r.writer, r.write_date, r.comment_id, r.recomment_id, r.heart, r.user_id, u.user_ban
+		from recomment r, comment c, user_info u
+		where r.comment_id = c.comment_id
+		  AND r.user_id = u.user_id
+		  AND user_delete_check = '0'
+		and c.board_id = #{board_id}
+	</select>
+	
+	<insert id="insertComment" parameterType="com.cems.application.vo.CommentDto">
+		INSERT INTO comment(writer, board_id, content, user_id)
+		VALUE(#{writer},
+			#{board_id}, 
+			#{content, jdbcType=VARCHAR},
+			#{user_id})
+	</insert>
+
+	<insert id="insertRecomment" parameterType="com.cems.application.vo.RecommentDto">
+		INSERT INTO recomment(writer, comment_id, content, user_id)
+		VALUE(#{writer},
+			#{comment_id}, 
+			#{content, jdbcType=VARCHAR},
+			#{user_id})
+	</insert>
+	
+	<update id="deleteComment" parameterType="com.cems.application.vo.CommentDto">
+		UPDATE comment SET comment_delete_check = '1'
+		 WHERE comment_id = #{comment_id}
+	</update>
+	
+	<delete id="deleteRecomment" parameterType="com.cems.application.vo.RecommentDto">
+		DELETE FROM recomment
+		WHERE recomment_id = #{recomment_id};
+	</delete>
+</mapper>

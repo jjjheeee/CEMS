@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Leaderboard UI Design</title>
+	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="assets/vendor/bootstrap-icons/bootstrap-icons.css">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+<body>
+	<section class="main-content">
+		<div class="container">
+			<h1>유저 랭킹</h1>
+
+			<div class="row align-items-end mb-5">
+				<div class="col-sm-4">
+					<div class="leaderboard-card">
+						<div class="leaderboard-card__top">
+							<div class="text-center">
+								<h3>TOP 2</h3>
+							</div>
+							<h3 class="text-center">Question_cnt</h3>
+						</div>
+						<div class="leaderboard-card__body">
+							<div class="text-center">
+								<img src="img/user2.jpg" class="circle-img mb-2" alt="User Img">
+								<h5 class="mb-0">user_nickname</h5>
+								<p class="text-muted mb-0">@sandeep</p>
+								<hr>
+								<div class="d-flex justify-content-between align-items-center">
+									<span><i class="fa fa-map-marker"></i> country</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-sm-4">
+					<div class="leaderboard-card leaderboard-card--first">
+						<div class="leaderboard-card__top">
+							<div class="text-center">
+								<h2>
+									TOP 1
+								</h2>
+								<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="gold" class="bi bi-trophy-fill" viewBox="0 0 16 16">
+									<path d="M2.5.5A.5.5 0 0 1 3 0h10a.5.5 0 0 1 .5.5c0 .538-.012 1.05-.034 1.536a3 3 0 1 1-1.133 5.89c-.79 1.865-1.878 2.777-2.833 3.011v2.173l1.425.356c.194.048.377.135.537.255L13.3 15.1a.5.5 0 0 1-.3.9H3a.5.5 0 0 1-.3-.9l1.838-1.379c.16-.12.343-.207.537-.255L6.5 13.11v-2.173c-.955-.234-2.043-1.146-2.833-3.012a3 3 0 1 1-1.132-5.89A33.076 33.076 0 0 1 2.5.5zm.099 2.54a2 2 0 0 0 .72 3.935c-.333-1.05-.588-2.346-.72-3.935zm10.083 3.935a2 2 0 0 0 .72-3.935c-.133 1.59-.388 2.885-.72 3.935z"/>
+								</svg>
+							</div>
+
+							<h3 class="text-center">Question_cnt</h3>
+						</div>
+						<div class="leaderboard-card__body">
+							<div class="text-center">
+								<img src="img/user1.jpg" class="circle-img mb-2" alt="User Img">
+								<h5 class="mb-0">Kiran Acharya</h5>
+								<p class="text-muted mb-0">@kiranacharyaa</p>
+								<hr>
+								<div class="d-flex justify-content-between align-items-center">
+									<span><i class="fa fa-map-marker"></i> country</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+				
+
+				<div class="col-sm-4">
+					<div class="leaderboard-card ">
+						<div class="leaderboard-card__top">
+							<div class="text-center">
+								<h3>TOP 3</h3>
+							</div>
+							<h3 class="text-center">Question_cnt</h3>
+						</div>
+						<div class="leaderboard-card__body">
+							<div class="text-center">
+								<img src="img/user3.jpg" class="circle-img mb-2" alt="User Img">
+								<h5 class="mb-0">John doe</h5>
+								<p class="text-muted mb-0">@johndoe</p>
+								<hr>
+								<div class="d-flex justify-content-between align-items-center">
+									<span><i class="fa fa-map-marker"></i> country</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+			<h4 >모든 유저</h4>
+
+			<table class="table">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>회원</th>
+						<th>푼 문제수</th>
+						<th>나라</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							1
+						</td>
+						<td>
+							<div class="d-flex align-items-center">
+								<img src="img/user1.jpg" class="circle-img circle-img--small mr-2" alt="User Img">
+								<div class="user-info__basic">
+									<h5 class="mb-0">username</h5>
+									<p class="text-muted mb-0">@usernickname</p>
+								</div>
+							</div>
+						</td>
+						<td>
+							<div class="d-flex align-items-baseline">
+								<h4 class="mr-1">total 문제</h4><small class="text-success"><i class="fa fa-arrow-up"></i> today+</small>
+							</div>
+						</td>
+						<td>Bangalore</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</section>
+	
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>
